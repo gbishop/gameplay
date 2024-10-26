@@ -120,11 +120,6 @@ function play(game) {
   }
 }
 
-console.log("main");
-if (location.search) {
-  const game = decode(new URL(location.href));
-  console.log({ game });
-  play(game);
-} else {
-  play(example);
-}
+const game = decode(new URL(location.href));
+console.log({ game });
+play(game);

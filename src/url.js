@@ -215,9 +215,12 @@ function equal(a, b) {
   return false;
 }
 
-let u = encode(example);
-let s = u.search;
-if (s != window.location.search) window.location.search = s;
-let u2 = new URL(window.location.href);
-const result = decode(u2);
-console.log("equal", equal(example, result));
+const test = false;
+if (test) {
+  let u = encode(example);
+  let s = u.search;
+  if (s != window.location.search) window.location.search = s;
+  let u2 = new URL(window.location.href);
+  const result = decode(u2);
+  console.log("equal", equal(example, result));
+}
