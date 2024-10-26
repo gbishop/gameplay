@@ -4,12 +4,16 @@
   "description": "Gameplay",
   "main": "index.html",
   "scripts": {
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist",
     "start": "vite --port 8080 --host 0.0.0.0",
     "build": "vite build"
   },
+  "homepage": "https://gbishop.github.io/gameplay/",
   "author": "Gary Bishop",
   "license": "ISC",
   "devDependencies": {
+    "gh-pages": "^6.2.0",
     "vite": "^5.4.10"
   },
   "dependencies": {
