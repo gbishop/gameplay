@@ -1,5 +1,7 @@
-import { example, decode } from "./url";
+import { decode } from "./url";
 import { YouTubePlayer } from "./yt-player";
+// @ts-ignore
+import links from "./links.json";
 
 /** @param {Game} game */
 function play(game) {
@@ -120,6 +122,35 @@ function play(game) {
   }
 }
 
-const game = decode(new URL(location.href));
-console.log({ game });
-play(game);
+if (location.search) {
+  const game = decode(new URL(location.href));
+  console.log({ game });
+  play(game);
+} else {
+  const html = [];
+  for (const link of links) {
+    const url = new URL(location.href);
+    url.search = link.slice(3);
+    const sp = url.searchParams;
+    const videoId = sp.get("v");
+    const src = `https://img.youtube.com/vi/${videoId}/mqdefault.jpg`;
+    const cell = `
+      <a href="${url}">
+        <figure>
+          <img src="${src}"\>
+          <figcaption>${sp.get("t")}</figcaption>
+        </figure>
+      </a>`;
+    html.push(cell);
+  }
+  const app = document.getElementById("app");
+  if (!app) {
+    throw Error("Bad Dom");
+  }
+  const message = document.getElementById("message");
+  if (!message) {
+    throw Error("Bad Dom");
+  }
+  app.innerHTML = html.join("");
+  message.style.display = "none";
+}
