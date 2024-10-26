@@ -8,7 +8,10 @@
   },
   "author": "Gary Bishop",
   "license": "ISC",
-  "dev-dependencies": {
+  "devDependencies": {
     "vite": "^5.4.10"
+  },
+  "dependencies": {
+    "events": "^3.3.0"
   }
 }

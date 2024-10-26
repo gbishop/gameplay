@@ -58,8 +58,8 @@ export const example = {
           next: -1,
         },
         {
-          prompt: "quit",
-          next: -2,
+          prompt: "jump to end",
+          next: 3590,
         },
       ],
     },
@@ -119,7 +119,7 @@ export function encode(game) {
  * @param {URL} url
  * @returns {Game}
  */
-function decode(url) {
+export function decode(url) {
   const sp = url.searchParams;
   /**
    * Return value of a parameter or default
@@ -168,6 +168,8 @@ function decode(url) {
       choices: [],
     };
     for (const cmatch of groups.choices.matchAll(cpat)) {
+      const groups = cmatch.groups;
+      if (!groups) continue;
       const choice = {
         prompt: prompts[+groups.prompt],
         next: 0,
@@ -195,7 +197,9 @@ function decode(url) {
  * returns {boolean}
  */
 function equal(a, b) {
-  if (a == b) return true;
+  if (a == b) {
+    return true;
+  }
   if (Array.isArray(a) && Array.isArray(b)) {
     if (a.length == b.length) {
       return a.every((v, i) => equal(v, b[i]));
@@ -205,7 +209,7 @@ function equal(a, b) {
   if (typeof a == "object" && typeof b == "object") {
     const ka = Object.keys(a).sort();
     const kb = Object.keys(b).sort();
-    return equal(ka, kb) && ka.every((v, i) => equal(v, kb[i]));
+    return equal(ka, kb) && ka.every((k) => equal(a[k], b[k]));
   }
 
   return false;

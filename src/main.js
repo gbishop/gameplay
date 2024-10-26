@@ -1,4 +1,4 @@
-import { example } from "./url";
+import { example, decode } from "./url";
 import { YouTubePlayer } from "./yt-player";
 
 /** @param {Game} game */
@@ -18,6 +18,7 @@ function play(game) {
   });
 
   let TPIndex = 0;
+  let Duration = 0;
 
   player.load(game.video, false, game.start);
   showPrompt({ time: 0, choices: [{ prompt: "Play", next: -1 }] }, 0);
@@ -27,6 +28,21 @@ function play(game) {
       player.pause();
       showPrompt(tp[TPIndex], -1);
     }
+  });
+  player.on("playing", () => {
+    if (Duration == 0) {
+      Duration = player.getDuration();
+      if (Duration > 0) {
+        game.timePoints.push({
+          time: Duration,
+          choices: [{ prompt: "Again?", next: -1 }],
+        });
+      }
+    }
+  });
+  player.on("ended", () => {
+    const tp = game.timePoints;
+    showPrompt(tp[tp.length - 1], 0);
   });
 
   /** @param {TimePoint} tp
@@ -87,6 +103,12 @@ function play(game) {
       console.log("quit");
     } else {
       player.seek(next);
+      for (let i = 0; i < game.timePoints.length; i++) {
+        if (game.timePoints[i].time >= next) {
+          TPIndex = i;
+          break;
+        }
+      }
       go();
     }
   }
@@ -99,4 +121,10 @@ function play(game) {
 }
 
 console.log("main");
-play(example);
+if (location.search) {
+  const game = decode(new URL(location.href));
+  console.log({ game });
+  play(game);
+} else {
+  play(example);
+}
