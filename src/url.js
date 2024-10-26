@@ -167,8 +167,7 @@ export function decode(url) {
     }
   } else {
     let pat = /[tT](?<time>\d+)(?<choices>(?:[cbqpnN]\d+)+)/g;
-    let cpat =
-      /(?<key>[cbq])(?<prompt>\d+)|(?<key>p)(?<prompt>\d+)(?<sign>[nN])(?<next>\d+)/g;
+    let cpat = /(?<key>[cbqp])(?<prompt>\d+)(?:(?<sign>[nN])(?<next>\d+))?/g;
     for (const match of P("g", "").matchAll(pat)) {
       const groups = match.groups;
       if (!groups) continue;
