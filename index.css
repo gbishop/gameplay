@@ -2,9 +2,15 @@ body {
   margin: 0;
 }
 #app {
-  position: fixed;
   width: 100vw;
   height: 100vh;
+}
+#app figure {
+  display: inline-block;
+  margin-inline: 10px;
+}
+#app figcaption {
+  text-align: center;
 }
 #message {
   position: fixed;
