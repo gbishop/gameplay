@@ -2,6 +2,19 @@ import sqlite3
 import json
 import urllib.parse
 import numpy as np
+from PIL import Image
+import requests
+import io
+
+
+def validate_videoId(videoId):
+    url = f"http://img.youtube.com/vi/{videoId}/mqdefault.jpg"
+    r = requests.get(url)
+    if r.ok:
+        img = Image.open(io.BytesIO(r.content))
+        return img.width != 120
+    else:
+        return False
 
 
 def build_url(base_url, path, args_dict):
@@ -12,15 +25,35 @@ def build_url(base_url, path, args_dict):
     return urllib.parse.urlunparse(url_parts)
 
 
-base_url = "https://gbishop.github.io"
-path = "THG"
+popular_games = []
+for line in open("games.txt", "r"):
+    count, url = line.split()
+    count = int(count)
+    url = url.strip()
+    slug = url.split("/")[-2]
+    popular_games.append((count, slug))
 
-lengths = []
-longest = 0
+# base_url = "https://gbishop.github.io"
+base_url = "http://localhost:8080"
+# path = "THG"
+path = ""
+
+games = {}
 with sqlite3.connect("games.sqlite") as connection:
     cursor = connection.cursor()
     for row in cursor.execute("""select json from games"""):
         game = json.loads(row[0])
+        games[game["slug"]] = game
+
+with open("links.html", "w") as fp:
+    print("""<ol>""", file=fp)
+    for count, slug in popular_games[:100]:
+        game = games.get(slug)
+        if not game:
+            continue
+        if not validate_videoId(game["videoId"]):
+            print("invalid", slug)
+            continue
         args = []
         kind = game.get("kind")
         if not kind:
@@ -36,14 +69,9 @@ with sqlite3.connect("games.sqlite") as connection:
         args.append(("s", game["start"]))
         args.append(("t", game["title"]))
         if kind == "basic":
-            args.append(("i", game["interval"]))
-            args.append(("e", game["end"]))
+            args.append(("i", game["interval"] * 10))
+            args.append(("e", game["end"] * 10))
             args.append(("p", game["message"]))
-
-        elif kind == "foo":
-            for tp in game["timePoints"]:
-                args.append(("t", tp["time"]))
-                args.append(("p", tp["choices"][0]["prompt"]))
 
         else:
             prompts = {}
@@ -81,12 +109,6 @@ with sqlite3.connect("games.sqlite") as connection:
             for p in prompts:
                 args.append(("d", p))
         url = build_url(base_url, path, args)
-        lengths.append(len(url))
-        if len(url) > longest:
-            print(len(url), url)
-            longest = len(url)
-
-
-lengths = np.array(lengths)
-
-print(f"min = {lengths.min()} max = {lengths.max()} mean = {lengths.mean()}")
+        link = f"""<li><a href="{url}">{count} {game["title"]}</a></li>"""
+        print(link, file=fp)
+    print("""</ol>""", file=fp)

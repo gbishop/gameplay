@@ -2,4 +2,6 @@
 **/package-lock.json
 .~lock.*
 data/games.sqlite
+data/games.txt
+data/unpublished.txt
 

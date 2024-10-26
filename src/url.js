@@ -141,7 +141,7 @@ export function decode(url) {
     return def;
   }
 
-  let t0 = P("s", 0);
+  let t0 = P("s", 0) / 10;
   /** @type {Game} */
   const game = {
     title: P("t", "untitled"),
@@ -155,37 +155,49 @@ export function decode(url) {
       prompts.push(value);
     }
   }
-  let pat = /[tT](?<time>\d+)(?<choices>(?:[cbqpnN]\d+)+)/g;
-  let cpat =
-    /(?<key>[cbq])(?<prompt>\d+)|(?<key>p)(?<prompt>\d+)(?<sign>[nN])(?<next>\d+)/g;
-  for (const match of P("g", "").matchAll(pat)) {
-    const groups = match.groups;
-    if (!groups) continue;
-    t0 += parseInt(groups.time) / 10;
-    /** @type {TimePoint} tp */
-    const tp = {
-      time: t0,
-      choices: [],
-    };
-    for (const cmatch of groups.choices.matchAll(cpat)) {
-      const groups = cmatch.groups;
-      if (!groups) continue;
-      const choice = {
-        prompt: prompts[+groups.prompt],
-        next: 0,
-      };
-      const key = groups.key;
-      if (key == "b") {
-        choice.next = -1;
-      } else if (key == "q") {
-        choice.next = -2;
-      } else if (key == "p") {
-        choice.next =
-          (parseInt(groups.next) / 10) * { n: 1, N: -1 }[groups.sign] + t0;
-      }
-      tp.choices.push(choice);
+  const interval = P("i", 0) / 10;
+  const end = P("e", 0) / 10;
+  const prompt = P("p", "");
+  if (interval && end && prompt) {
+    for (let t = t0 + interval; t <= end; t += interval) {
+      game.timePoints.push({
+        time: t,
+        choices: [{ prompt, next: 0 }],
+      });
     }
-    game.timePoints.push(tp);
+  } else {
+    let pat = /[tT](?<time>\d+)(?<choices>(?:[cbqpnN]\d+)+)/g;
+    let cpat =
+      /(?<key>[cbq])(?<prompt>\d+)|(?<key>p)(?<prompt>\d+)(?<sign>[nN])(?<next>\d+)/g;
+    for (const match of P("g", "").matchAll(pat)) {
+      const groups = match.groups;
+      if (!groups) continue;
+      t0 += parseInt(groups.time) / 10;
+      /** @type {TimePoint} tp */
+      const tp = {
+        time: t0,
+        choices: [],
+      };
+      for (const cmatch of groups.choices.matchAll(cpat)) {
+        const groups = cmatch.groups;
+        if (!groups) continue;
+        const choice = {
+          prompt: prompts[+groups.prompt],
+          next: 0,
+        };
+        const key = groups.key;
+        if (key == "b") {
+          choice.next = -1;
+        } else if (key == "q") {
+          choice.next = -2;
+        } else if (key == "p") {
+          choice.next =
+            (parseInt(groups.next) / 10) * { n: 1, N: -1 }[groups.sign] + t0;
+        }
+        tp.choices.push(choice);
+      }
+      game.timePoints.push(tp);
+    }
   }
   return game;
 }
