@@ -22,6 +22,11 @@ export default defineConfig({
     rollupOptions: {
       input: {
         index: "./index.html",
+        find: "./find/index.html",
+        play: "./play/index.html",
+        settings: "./settings/index.html",
+        manage: "./manage/index.html",
+        create: "./create/index.html",
       },
       output: {
         entryFileNames: `[name].js`,
