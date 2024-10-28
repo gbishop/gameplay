@@ -1,16 +1,41 @@
+* {
+  box-sizing: border-box;
+}
 body {
   margin: 0;
 }
 #app {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
   width: 100vw;
   height: 100vh;
+  container: size;
+}
+#app a {
+  display: inline-block;
+  width: 100%;
 }
 #app figure {
-  display: inline-block;
-  margin-inline: 10px;
+  width: 100%;
+  display: inline-grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: auto auto;
+  border: 1em solid #fff;
+  margin-inline: 0;
+  margin-block: 0;
+}
+#app figure img {
+  width: 100%;
+  object-fit: contain;
+}
+#app a:focus figure {
+  border-color: black;
+  background-color: yellow;
 }
 #app figcaption {
   text-align: center;
+  width: 0;
+  min-width: 100%;
 }
 #message {
   position: fixed;
