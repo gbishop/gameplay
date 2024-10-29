@@ -1,4 +1,3 @@
-import { decode } from "../url";
 // @ts-ignore
 import links from "./links.json";
 const movers = new Set([" ", "ArrowRight"]);
@@ -32,7 +31,6 @@ function index() {
   app.innerHTML = html.join("");
   message.style.display = "none";
   document.addEventListener("keyup", (event) => {
-    console.log(event);
     if (movers.has(event.key)) {
       const targets = [...document.querySelectorAll("a")];
       const selected = document.activeElement;
@@ -86,10 +84,4 @@ function index() {
   }
 }
 
-if (location.search) {
-  const game = decode(new URL(location.href));
-  console.log({ game });
-  play(game);
-} else {
-  index();
-}
+index();
