@@ -1,0 +1,28 @@
+* {
+  box-sizing: border-box;
+}
+label {
+  display: inline-block;
+}
+input[type="number"] {
+  width: 6em;
+}
+details > div {
+  margin: 0 2em 2em 2em;
+  padding: 1em;
+  border: 1px solid black;
+}
+#timepoints {
+  min-height: 10em;
+  border: 1px solid black;
+}
+#timepoints input[name="jumptime"][disabled] {
+  display: none;
+}
+#timepoints .choices label {
+  display: block;
+  margin-left: 1em;
+}
+#timepoints .choices input {
+  margin: 0.25em;
+}

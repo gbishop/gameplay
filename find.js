@@ -1,4 +1,4 @@
-import { d as decode } from './url.js';
+import './modulepreload-polyfill.js';
 /* empty css       */
 
 const links = [
@@ -93,6 +93,7 @@ const links = [
 	"./?v=e-ORhEE9VVg&s=0&t=Taylor+Swift+Blank+Space&g=t150c0q1t150c0q1t450c0q1t450c0q1t1050c0q1t950c0q1&d=more&d=finished"
 ];
 
+// @ts-ignore
 const movers = new Set([" ", "ArrowRight"]);
 const choosers = new Set(["Enter", "ArrowLeft"]);
 
@@ -124,7 +125,6 @@ function index() {
   app.innerHTML = html.join("");
   message.style.display = "none";
   document.addEventListener("keyup", (event) => {
-    console.log(event);
     if (movers.has(event.key)) {
       const targets = [...document.querySelectorAll("a")];
       const selected = document.activeElement;
@@ -178,11 +178,5 @@ function index() {
   }
 }
 
-if (location.search) {
-  const game = decode(new URL(location.href));
-  console.log({ game });
-  play(game);
-} else {
-  index();
-}
+index();
 //# sourceMappingURL=find.js.map

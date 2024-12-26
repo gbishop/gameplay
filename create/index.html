@@ -4,10 +4,131 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Gameplay: Create</title>
-    <link rel="stylesheet" crossorigin href="/gameplay/styles.css">
+    <link rel="stylesheet" crossorigin href="/gameplay/create.css">
   </head>
+
   <body>
     <h1>Create a game</h1>
-    <p>Coming soon.</p>
+    <label
+      >YouTube video ID (or URL)
+      <input type="text" id="video" required />
+    </label>
+    <button disabled>Load</button>
+    <div id="player"></div>
+    <details open>
+      <summary>Basic gameplay with fixed interval between prompts</summary>
+      <div>
+        <form id="basic">
+          <label
+            >Pause every:
+            <input
+              name="interval"
+              type="number"
+              min="5"
+              required
+              placeholder="seconds"
+              title="time in seconds between prompts"
+            />
+          </label>
+          <label
+            >Prompt:
+            <input
+              name="prompt"
+              type="text"
+              required
+              title="message to display when the video pauses"
+            />
+          </label>
+          <label
+            >Start time:
+            <input
+              name="start"
+              type="number"
+              min="0"
+              value="0"
+              required
+              placeholder="seconds"
+            />
+          </label>
+          <label
+            >End time:
+            <input
+              name="end"
+              type="number"
+              min="0"
+              value="0"
+              required
+              placeholder="seconds"
+            />
+          </label>
+        </form>
+        <button>Play</button>
+      </div>
+    </details>
+    <details open>
+      <summary>Gameplay with prompts at times you specify.</summary>
+      <div>
+        <form id="advanced">
+          <button>Add pause</button>
+          <label>
+            Start at:
+            <input
+              type="number"
+              name="start"
+              placeholder="seconds"
+              required
+              title="Video start time"
+            />
+          </label>
+          <div id="timepoints">
+            <div>
+              <label
+                >Pause at:
+                <input type="number" name="time" />
+              </label>
+              <label
+                >Prompt
+                <input type="text" name="prompt" />
+              </label>
+              <label
+                >Action
+                <select
+                  name="action"
+                  oninput="this.nextElementSibling.toggleAttribute('disabled', this.value != 'jumpto')"
+                >
+                  <option value="continue">Continue</option>
+                  <option value="startover">Start over</option>
+                  <option value="quit">Quit</option>
+                  <option value="jumpto">Jump to</option>
+                </select>
+                <input
+                  type="number"
+                  name="jumptime"
+                  placeholder="seconds"
+                  title="Jump to this time"
+                  disabled
+                />
+              </label>
+            </div>
+            <div>
+              <label
+                >Pause at:
+                <input type="number" name="time" />
+              </label>
+              then if:
+              <div class="choices">
+                <label><input type="text" />continue,</label>
+                <label><input type="text" />start over,</label>
+                <label><input type="text" />quit,</label>
+                <label
+                  ><input type="text" />jump to<input type="number"
+                /></label>
+              </div>
+            </div>
+          </div>
+        </form>
+        <button>Play</button>
+      </div>
+    </details>
   </body>
 </html>
